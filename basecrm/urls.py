@@ -21,5 +21,6 @@ from trade.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('trade.urls')),
-
 ]
+
+handler404 = pageNotFound

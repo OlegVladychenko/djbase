@@ -1,8 +1,11 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 
 def index(request):
     return HttpResponse("Страница главная")
 
-def catigories(request):
-    return HttpResponse("<h1>Страница торговля</h1>")
+def сlients(request):
+    return HttpResponse("<h1>Контрагенты</h1>")
+
+def pageNotFound(request, exeption):
+    return HttpResponseNotFound('<h1>Страница не найдена</h1>')
