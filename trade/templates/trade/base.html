@@ -6,8 +6,15 @@
 </head>
 <body>
 
-{% block maim %}
+{% block mainmenu %}
+<ul>
+    {% for m in menu %}
+    <li>{{m}}</li>
+    {% endfor %}
+</ul>
+{% endblock mainmenu %}
 
-
+{% block content %}
+{% endblock %}
 </body>
 </html>
