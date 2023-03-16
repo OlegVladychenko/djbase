@@ -22,12 +22,8 @@ def сlients(request):
     response.encoding = 'utf-8-sig'
     data = json.loads(response.text)
 
-    print("!!!!!!!!!!!!!!!!!!")
-    print(data)
 
-    print("!!!!!!!!!!!!!!!!!!")
-
-    return render(request, 'trade/clients.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports})
+    return render(request, 'trade/clients.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports,'datalist':data})
 
 def pageNotFound(request, exeption):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
