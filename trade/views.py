@@ -1,6 +1,9 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 
+import requests
+import json
+from requests.auth import HTTPBasicAuth
 from .models import *
 
 #menu_directory = ["Контрагенты","Номенклатура","Торговые"]
@@ -13,6 +16,17 @@ def index(request):
     return render(request, 'trade/index.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports})
 
 def сlients(request):
+    url = 'http://localhost/CRM/hs/getClients/'
+    headers = {'Accept': 'application/json'}
+    response = requests.get('http://localhost/CRM/hs/getClients/', auth=HTTPBasicAuth('Admin', ''), headers=headers)
+    response.encoding = 'utf-8-sig'
+    data = json.loads(response.text)
+
+    print("!!!!!!!!!!!!!!!!!!")
+    print(data)
+
+    print("!!!!!!!!!!!!!!!!!!")
+
     return render(request, 'trade/clients.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports})
 
 def pageNotFound(request, exeption):
