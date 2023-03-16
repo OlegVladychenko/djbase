@@ -11,8 +11,27 @@
 </head>
 <body>
 
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-2">
+          <a href="/" class="d-flex align-items-center pb-3 link-dark text-decoration-none border-bottom">
+      <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-5 fw-semibold">Trade CRM</span>
+    </a>
+    </div>
+    <div class="col">
+      Menu
+    </div>
+  </div>
+
+</div>
+
+
 {% block mainmenu %}
 
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-2">
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="bootstrap" viewBox="0 0 118 94">
@@ -78,11 +97,8 @@
 
   <div class="b-example-divider b-example-vr"></div>
   <div class="b-example-divider b-example-vr"></div>
-  <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
-    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-      <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
-      <span class="fs-5 fw-semibold">Trade CRM</span>
-    </a>
+
+
     <ul class="list-unstyled ps-0">
 
 
@@ -129,15 +145,24 @@
       <li class="border-top my-3"></li>
 
     </ul>
-  </div>
+
   <div class="b-example-divider b-example-vr"></div>
   <div class="b-example-divider b-example-vr"></div>
 </main>
 
 {% endblock mainmenu %}
 
-{% block content %}
+   </div>
+    <div class="col">
+      {% block content %}
 {% endblock %}
+
+    </div>
+  </div>
+
+</div>
+
+
 
 
       <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
