@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 from .models import *
 
 #menu_directory = ["Контрагенты","Номенклатура","Торговые"]
-menu_directory = [{'title':'Контрагенты','ref':'http://127.0.0.1:8000/%D1%81lients/'},{'title':'Номенклатура','ref':'#'},{'title':'Торговые','ref':'#'}]
+menu_directory = [{'title':'Контрагенты','ref':'сlients'},{'title':'Номенклатура','ref':'goods'},{'title':'Торговые','ref':'employees'}]
 menu_documents = ["Продажи","Оплаты","Возвраты"]
 menu_reports = ["Продажи","Оплаты","Взаиморасчеты"]
 
@@ -16,14 +16,50 @@ def index(request):
     return render(request, 'trade/index.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports})
 
 def сlients(request):
-    url = 'http://localhost/CRM/hs/getClients/'
+    #url = 'http://localhost/CRM/hs/getClients/'
+    #headers = {'Accept': 'application/json'}
+    #response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
+    #response.encoding = 'utf-8-sig'
+    #data = json.loads(response.text)
+
+    param_goods = {}
     headers = {'Accept': 'application/json'}
-    response = requests.get('http://localhost/CRM/hs/getClients/', auth=HTTPBasicAuth('Admin', ''), headers=headers)
+    name_method = "clients"
+    url = 'http://localhost/CRM/hs/getClients/' +name_method+"/"+ json.dumps(param_goods)
+    response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
     response.encoding = 'utf-8-sig'
     data = json.loads(response.text)
 
 
     return render(request, 'trade/clients.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports,'datalist':data})
 
+def goods(request):
+
+    param_goods = {'sender': 'Alice', 'receiver': 'Bob', 'message': 'We did it!'}
+    headers = {'Accept': 'application/json'}
+    name_method = "goods"
+    url = 'http://localhost/CRM/hs/getData/' +name_method+"/"+ json.dumps(param_goods)
+    response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
+    response.encoding = 'utf-8-sig'
+    data = json.loads(response.text)
+
+    return render(request, 'trade/goods.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports,'datalist':data})
+
+def employees(request):
+
+    param_goods = {}
+    headers = {'Accept': 'application/json'}
+    name_method = "employees"
+    url = 'http://localhost/CRM/hs/getData/' +name_method+"/"+ json.dumps(param_goods)
+    response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
+    response.encoding = 'utf-8-sig'
+    data = json.loads(response.text)
+
+    return render(request, 'trade/employees.html',{'menu_directory':menu_directory,'menu_documents':menu_documents,'menu_reports':menu_reports,'datalist':data})
+
+
 def pageNotFound(request, exeption):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+
+def show_сlient(request,client_id):
+    return HttpResponse(f"Клиент {client_id}")

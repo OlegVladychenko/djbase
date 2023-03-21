@@ -5,20 +5,15 @@
         <table class="table table-striped table-sm">
           <thead>
             <tr>
-                <th scope="col">Код</th>
+              <th scope="col">Код</th>
               <th scope="col">Наименование</th>
-              <th scope="col">Наименование полное</th>
-              <th scope="col">Адрес</th>
             </tr>
           </thead>
           <tbody>
-
               {% for m in datalist %}
               <tr>
-              <td><a href="{% url 'сlient' m.Code %}">{{m.Code}} </a></td>
+              <td>{{m.Code}}</td>
               <td>{{m.Name}}</td>
-              <td>{{m.FullName}}</td>
-              <td>{{m.Adress}}</td>
             </tr>
               {% endfor %}
 
