@@ -61,5 +61,12 @@ def employees(request):
 def pageNotFound(request, exeption):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
 
-def show_сlient(request,client_id):
-    return HttpResponse(f"Клиент {client_id}")
+def show_сlient(request,client_slug):
+
+    context = {
+        'client': client_slug,
+        'menu_directory' : menu_directory,
+        'menu_documents':menu_documents,
+        'menu_reports': menu_reports,
+    }
+    return render(request,'trade/client.html', context)

@@ -15,7 +15,7 @@
 
               {% for m in datalist %}
               <tr>
-              <td><a href="{% url 'сlient' m.Code %}">{{m.Code}} </a></td>
+              <td><a href="{% url 'сlient' m.GUID %}">{{m.Code}} </a></td>
               <td>{{m.Name}}</td>
               <td>{{m.FullName}}</td>
               <td>{{m.Adress}}</td>

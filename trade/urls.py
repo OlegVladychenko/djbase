@@ -7,7 +7,7 @@ urlpatterns = [
     path('сlients/', сlients, name='сlients'),
     path('goods/', goods, name='goods'),
     path('employees/', employees, name='employees'),
-    path('сlient/<int:client_id>/', show_сlient, name='сlient'),
+    path('сlient/<slug:client_slug>/', show_сlient, name='сlient'),
 
 
 ]
