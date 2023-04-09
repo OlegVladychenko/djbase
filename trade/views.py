@@ -4,15 +4,18 @@ from django.shortcuts import render
 import requests
 import json
 from requests.auth import HTTPBasicAuth
+import urllib.parse
 
 from .forms import *
 from .models import *
+from django.shortcuts import render
+from django.template import loader
 
 # menu_directory = ["Контрагенты","Номенклатура","Торговые"]
 menu_directory = [{'title': 'Контрагенты', 'ref': 'сlients'}, {'title': 'Номенклатура', 'ref': 'goods'},
                   {'title': 'Торговые', 'ref': 'employees'}]
 menu_documents = ["Продажи", "Оплаты", "Возвраты"]
-menu_reports = ["Продажи", "Оплаты", "Взаиморасчеты"]
+menu_reports = [{'title': 'Продажи', 'ref': 'reports'}, {'title': 'Оплаты', 'ref': 'reports'}, {'title': 'Взаиморасчеты','ref': 'reports'}]
 
 
 def index(request):
@@ -76,9 +79,34 @@ def show_сlient(request, client_slug):
     if request.method == 'POST':
         form = ClientForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
+            form.cleaned_data["guid"] = client_slug
+            # urllib.parse.quote_plus
+            headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
+            name_method = "update_client"
+
+            url = 'http://localhost/CRM/hs/getData/' + name_method + "/" + json.dumps(form.cleaned_data,
+                                                                                      ensure_ascii=False)
+            response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
+            response.encoding = 'utf-8-sig'
+            print(response.status_code)
     else:
+        headers = {'Accept': 'application/json'}
+        name_method = "get_client"
+        url = 'http://localhost/CRM/hs/getData/' + name_method + "/" + client_slug
+        response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
+        response.encoding = 'utf-8-sig'
+        data = json.loads(response.text)
+
         form = ClientForm()
+        form.fields["guid"].initial = data.get('GUID')
+        form.fields["code"].initial = data.get('Code')
+        form.fields["name"].initial = data.get('Name')
+        form.fields["full_name"].initial = data.get('FullName')
+        form.fields["physical_address"].initial = data.get('PhysicalAddress')
+        form.fields["legal_address"].initial = data.get('LegalAddress')
+        form.fields["phones"].initial = data.get('Phones')
+        form.fields["vat_number"].initial = data.get('Phones')
+        form.fields["comment"].initial = data.get('Comment')
 
     context = {
         'form': form,
@@ -88,3 +116,14 @@ def show_сlient(request, client_slug):
         'menu_reports': menu_reports,
     }
     return render(request, 'trade/client.html', context)
+
+
+def reports(request):
+    datapoints = [
+        {"label": "Online Store", "y": 27},
+        {"label": "Offline Store", "y": 25},
+        {"label": "Discounted Sale", "y": 30},
+        {"label": "B2B Channel", "y": 8},
+        {"label": "Others", "y": 10}
+    ]
+    return render(request, 'trade/reports.html',  { "datapoints" : datapoints })
