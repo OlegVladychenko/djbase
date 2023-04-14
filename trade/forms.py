@@ -1,7 +1,12 @@
+from datetime import datetime
+
 from django import forms
 from setuptools.msvc import winreg
 
 from .models import *
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 class ClientForm(forms.Form):
     guid = forms.CharField(max_length=50,required=False,label="Идентификатор")
@@ -17,3 +22,13 @@ class ClientForm(forms.Form):
                                     widget=forms.Textarea(attrs={'cols':10,'rows':3,'class':'form-control'}))
     vat_number = forms.CharField(max_length=20,required=False,label="ИНН",widget=forms.TextInput(attrs={'class':'form-control'}))
     comment = forms.CharField(widget=forms.Textarea(attrs={'cols':10,'rows':4,'class':'form-control'}),required=False,label="Комментарий")
+
+class ReportForm(forms.Form):
+    name = forms.CharField(max_length=50,required=False,label="Идентификатор")
+    date_start = forms.DateTimeField( input_formats=['%d/%m/%Y %H:%M'],
+        widget=forms.DateTimeInput(attrs={
+            'class': 'form-control datetimepicker-input',
+            'data-target': '#datetimepicker1'
+        }))
+    date_start = forms.DateField(widget=DateInput)
+    date_end = forms.DateField(widget=DateInput)

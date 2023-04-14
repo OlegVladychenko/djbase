@@ -15,7 +15,7 @@ from django.template import loader
 menu_directory = [{'title': 'Контрагенты', 'ref': 'сlients'}, {'title': 'Номенклатура', 'ref': 'goods'},
                   {'title': 'Торговые', 'ref': 'employees'}]
 menu_documents = ["Продажи", "Оплаты", "Возвраты"]
-menu_reports = [{'title': 'Продажи', 'ref': 'reports'}, {'title': 'Оплаты', 'ref': 'reports'}, {'title': 'Взаиморасчеты','ref': 'reports'}]
+menu_reports = [{'title': 'Продажи', 'ref': 'reports_salary'}, {'title': 'Оплаты', 'ref': 'reports_salary'}, {'title': 'Взаиморасчеты','ref': 'reports_salary'}]
 
 
 def index(request):
@@ -117,8 +117,17 @@ def show_сlient(request, client_slug):
     }
     return render(request, 'trade/client.html', context)
 
+def reports_salary(request):
+    context = {
+        'menu_directory': menu_directory,
+        'menu_documents': menu_documents,
+        'menu_reports': menu_reports,
+    }
+    return render(request, 'trade/reports_salary.html', context)
 
-def reports(request):
+def reports_salary_manage(request):
+    form = ReportForm()
+
     datapoints = [
         {"label": "Online Store", "y": 27},
         {"label": "Offline Store", "y": 25},
@@ -126,4 +135,14 @@ def reports(request):
         {"label": "B2B Channel", "y": 8},
         {"label": "Others", "y": 10}
     ]
-    return render(request, 'trade/reports.html',  { "datapoints" : datapoints })
+
+    context = {
+        'form': form,
+        'menu_directory': menu_directory,
+        'menu_documents': menu_documents,
+        'menu_reports': menu_reports,
+        'datapoints': datapoints
+    }
+
+    return render(request, 'trade/reports_salary_manage.html', context)
+
