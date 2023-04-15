@@ -24,11 +24,5 @@ class ClientForm(forms.Form):
     comment = forms.CharField(widget=forms.Textarea(attrs={'cols':10,'rows':4,'class':'form-control'}),required=False,label="Комментарий")
 
 class ReportForm(forms.Form):
-    name = forms.CharField(max_length=50,required=False,label="Идентификатор")
-    date_start = forms.DateTimeField( input_formats=['%d/%m/%Y %H:%M'],
-        widget=forms.DateTimeInput(attrs={
-            'class': 'form-control datetimepicker-input',
-            'data-target': '#datetimepicker1'
-        }))
     date_start = forms.DateField(widget=DateInput)
     date_end = forms.DateField(widget=DateInput)

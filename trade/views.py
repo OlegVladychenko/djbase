@@ -1,21 +1,26 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 
+import datetime
 import requests
 import json
 from requests.auth import HTTPBasicAuth
 import urllib.parse
+from html import unescape
 
 from .forms import *
 from .models import *
 from django.shortcuts import render
 from django.template import loader
 
+from .report_utils import *
+
 # menu_directory = ["Контрагенты","Номенклатура","Торговые"]
 menu_directory = [{'title': 'Контрагенты', 'ref': 'сlients'}, {'title': 'Номенклатура', 'ref': 'goods'},
                   {'title': 'Торговые', 'ref': 'employees'}]
 menu_documents = ["Продажи", "Оплаты", "Возвраты"]
-menu_reports = [{'title': 'Продажи', 'ref': 'reports_salary'}, {'title': 'Оплаты', 'ref': 'reports_salary'}, {'title': 'Взаиморасчеты','ref': 'reports_salary'}]
+menu_reports = [{'title': 'Продажи', 'ref': 'reports_salary'}, {'title': 'Оплаты', 'ref': 'reports_salary'},
+                {'title': 'Взаиморасчеты', 'ref': 'reports_salary'}]
 
 
 def index(request):
@@ -117,6 +122,7 @@ def show_сlient(request, client_slug):
     }
     return render(request, 'trade/client.html', context)
 
+
 def reports_salary(request):
     context = {
         'menu_directory': menu_directory,
@@ -125,24 +131,40 @@ def reports_salary(request):
     }
     return render(request, 'trade/reports_salary.html', context)
 
-def reports_salary_manage(request):
-    form = ReportForm()
 
-    datapoints = [
-        {"label": "Online Store", "y": 27},
-        {"label": "Offline Store", "y": 25},
-        {"label": "Discounted Sale", "y": 30},
-        {"label": "B2B Channel", "y": 8},
-        {"label": "Others", "y": 10}
-    ]
+def reports_salary_manage(request):
+    managers = {}
+    percents = {}
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
+            name_method = "reports_salary_manage"
+            print(form.cleaned_data.get('date_start').isoformat())
+            params = {'date_start': form.cleaned_data.get('date_start').strftime("%d.%m.%Y"),
+                      'date_end': form.cleaned_data.get('date_end').strftime("%d.%m.%Y")}
+
+            url = 'http://localhost/CRM/hs/getData/' + name_method + "/" + json.dumps(params, ensure_ascii=False)
+            response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
+            response.encoding = 'utf-8-sig'
+            data = json.loads(response.text)
+            print(response.status_code)
+            print(data)
+
+            managers = data[0].get('Manager')
+            percents = data[0].get('Percent')
+            print(managers)
+            print(percents)
+    else:
+        form = ReportForm()
 
     context = {
         'form': form,
+        'managers': managers,
+        'percents': percents,
         'menu_directory': menu_directory,
         'menu_documents': menu_documents,
-        'menu_reports': menu_reports,
-        'datapoints': datapoints
+        'menu_reports': menu_reports
     }
 
     return render(request, 'trade/reports_salary_manage.html', context)
-
