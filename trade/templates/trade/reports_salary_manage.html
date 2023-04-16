@@ -21,7 +21,14 @@
   </div>
 </form>
 
-<canvas id="myChart" style="width:60%;"></canvas>
+
+{% if managers|length  > 0 %}
+   <canvas id="myChart" style="width:60%;"></canvas>
+{% else %}
+<p class="text-success">Нет данных для отображения, попробуйте изменить параметры</p>
+{% endif %}
+
+
 
 {% autoescape off %}
 <script>
