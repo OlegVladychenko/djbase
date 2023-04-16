@@ -167,6 +167,7 @@ def reports_salary_manage(request):
         'managers': managers,
         'percents': percents,
         'colors': colors,
+        'total': total,
         'menu_directory': menu_directory,
         'menu_documents': menu_documents,
         'menu_reports': menu_reports
