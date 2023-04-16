@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <form class="row g-3" action="" method="post">
     {% csrf_token %}
@@ -19,19 +20,13 @@
   </div>
 </form>
 
-<canvas id="myChart" style="width:100%;max-width:800px"></canvas>
+<canvas id="myChart" style="width:30%;"></canvas>
 
 {% autoescape off %}
 <script>
 var xValues = {{ managers }};
 var yValues = {{ percents }};
-var barColors = [
-  "#b91d47",
-  "#00aba9",
-  "#2b5797",
-  "#e8c3b9",
-  "#1e7145"
-];
+var barColors = {{ colors }};
 
 new Chart("myChart", {
   type: "pie",
@@ -43,6 +38,8 @@ new Chart("myChart", {
     }]
   },
   options: {
+    responsive: false,
+    maintainAspectRatio: true,
     title: {
       display: true,
       text: "Доли продаж по менеджерам/торговым"

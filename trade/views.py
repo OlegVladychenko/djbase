@@ -135,14 +135,16 @@ def reports_salary(request):
 def reports_salary_manage(request):
     managers = {}
     percents = {}
+    colors = {}
+    total = 0
     if request.method == 'POST':
         form = ReportForm(request.POST)
         if form.is_valid():
             headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
             name_method = "reports_salary_manage"
             print(form.cleaned_data.get('date_start').isoformat())
-            params = {'date_start': form.cleaned_data.get('date_start').strftime("%d.%m.%Y"),
-                      'date_end': form.cleaned_data.get('date_end').strftime("%d.%m.%Y")}
+            params = {'date_start': form.cleaned_data.get('date_start').strftime("%Y%m%d"),
+                      'date_end': form.cleaned_data.get('date_end').strftime("%Y%m%d")}
 
             url = 'http://localhost/CRM/hs/getData/' + name_method + "/" + json.dumps(params, ensure_ascii=False)
             response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
@@ -153,6 +155,8 @@ def reports_salary_manage(request):
 
             managers = data[0].get('Manager')
             percents = data[0].get('Percent')
+            colors = get_colors(len(managers))
+            total = data[0].get('Total')
             print(managers)
             print(percents)
     else:
@@ -162,6 +166,7 @@ def reports_salary_manage(request):
         'form': form,
         'managers': managers,
         'percents': percents,
+        'colors': colors,
         'menu_directory': menu_directory,
         'menu_documents': menu_documents,
         'menu_reports': menu_reports
