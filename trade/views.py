@@ -174,3 +174,7 @@ def reports_salary_manage(request):
     }
 
     return render(request, 'trade/reports_salary_manage.html', context)
+
+def notes(request):
+    return render(request, 'trade/notes.html',
+                  {'menu_directory': menu_directory, 'menu_documents': menu_documents, 'menu_reports': menu_reports})
