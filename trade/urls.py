@@ -11,6 +11,7 @@ urlpatterns = [
     path('reports_salary/', reports_salary, name='reports_salary'),
     path('reports_salary_manage/', reports_salary_manage, name='reports_salary_manage'),
     path('notes/', notes, name='notes'),
+    path('note/<int:note_id>/', note, name='note'),
 
 
 ]

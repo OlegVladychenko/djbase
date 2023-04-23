@@ -1,0 +1,20 @@
+{% extends 'trade/base.html' %}
+
+{% block content %}
+
+<form class="row g-3" action="" method="post">
+    {% csrf_token %}
+  <div class="col-auto">
+    <label  class="visually-hidden">Период с</label>
+    {{ form.date_start }}
+  </div>
+  <div class="col-auto">
+    <label class="visually-hidden">по</label>
+    {{ form.date_end }}
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary mb-2">Сформировать</button>
+  </div>
+</form>
+
+{% endblock%}

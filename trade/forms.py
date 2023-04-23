@@ -26,3 +26,8 @@ class ClientForm(forms.Form):
 class ReportForm(forms.Form):
     date_start = forms.DateField(widget=DateInput)
     date_end = forms.DateField(widget=DateInput)
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Notes
+        fields = ['title','content','favorite']

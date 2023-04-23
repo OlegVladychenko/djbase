@@ -3,6 +3,31 @@
 {% block content %}
 
 <h6>Заметки</h6>
+ <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Дата</th>
+              <th scope="col">Наименование</th>
+
+            </tr>
+          </thead>
+          <tbody>
+
+              {% for m in notes %}
+              <tr>
+                  <td>{{m.date_change}}</td>
+                    <td>{{m.title}}</td>
+            </tr>
+              {% endfor %}
+
+
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
 
 
 {% endblock%}
