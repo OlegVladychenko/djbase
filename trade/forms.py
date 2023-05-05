@@ -30,4 +30,11 @@ class ReportForm(forms.Form):
 class NoteForm(forms.ModelForm):
     class Meta:
         model = Notes
-        fields = ['title','content','favorite']
+        fields = ['title','content']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'cols': 210, 'rows': 23,'class': 'form-control'})
+        }
+        labels = {
+            'title': 'Заголовок'
+        }

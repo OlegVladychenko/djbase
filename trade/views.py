@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 
 import datetime
 import requests
@@ -175,6 +175,7 @@ def reports_salary_manage(request):
 
     return render(request, 'trade/reports_salary_manage.html', context)
 
+
 def notes(request):
     context = {
         'menu_directory': menu_directory,
@@ -183,46 +184,56 @@ def notes(request):
         'notes': Notes.objects.all()
     }
 
-    return render(request, 'trade/notes.html',context)
+    return render(request, 'trade/notes.html', context)
 
-def note(request, client_slug):
+
+def show_note(request, note_id):
+    note = get_object_or_404(Notes, pk=note_id)
+    print(request.method)
     if request.method == 'POST':
-        form = ClientForm(request.POST)
+        form = NoteForm(request.POST, instance=note)
         if form.is_valid():
-            form.cleaned_data["guid"] = client_slug
-            # urllib.parse.quote_plus
-            headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
-            name_method = "update_client"
-
-            url = 'http://localhost/CRM/hs/getData/' + name_method + "/" + json.dumps(form.cleaned_data,
-                                                                                      ensure_ascii=False)
-            response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
-            response.encoding = 'utf-8-sig'
-            print(response.status_code)
+            try:
+                form.save()
+            except:
+                form.add_error(None, 'Ошибка добавления заметки')
     else:
-        headers = {'Accept': 'application/json'}
-        name_method = "get_client"
-        url = 'http://localhost/CRM/hs/getData/' + name_method + "/" + client_slug
-        response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
-        response.encoding = 'utf-8-sig'
-        data = json.loads(response.text)
-
-        form = ClientForm()
-        form.fields["guid"].initial = data.get('GUID')
-        form.fields["code"].initial = data.get('Code')
-        form.fields["name"].initial = data.get('Name')
-        form.fields["full_name"].initial = data.get('FullName')
-        form.fields["physical_address"].initial = data.get('PhysicalAddress')
-        form.fields["legal_address"].initial = data.get('LegalAddress')
-        form.fields["phones"].initial = data.get('Phones')
-        form.fields["vat_number"].initial = data.get('Phones')
-        form.fields["comment"].initial = data.get('Comment')
+        form = NoteForm(instance=note)
 
     context = {
+        'note_id': note_id,
         'form': form,
-        'slug': client_slug,
         'menu_directory': menu_directory,
         'menu_documents': menu_documents,
         'menu_reports': menu_reports,
     }
     return render(request, 'trade/note.html', context)
+
+
+def add_note(request):
+    if request.method == 'POST':
+        form = NoteForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('notes')
+            except:
+                form.add_error(None, 'Ошибка добавления заметки')
+    else:
+        form = NoteForm()
+    context = {
+        'form': form,
+        'menu_directory': menu_directory,
+        'menu_documents': menu_documents,
+        'menu_reports': menu_reports,
+    }
+    return render(request, 'trade/add_note.html', context)
+
+def delete_note(request, note_id):
+    try:
+        instance = Notes.objects.get(id=note_id)
+        instance.delete()
+        return redirect('notes')
+    except:
+        print('Ошибка удаления заметки')
+    return render(request)
