@@ -188,6 +188,7 @@ def notes(request):
 
 
 def show_note(request, note_id):
+
     note = get_object_or_404(Notes, pk=note_id)
     print(request.method)
     if request.method == 'POST':
