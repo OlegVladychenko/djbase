@@ -9,7 +9,7 @@
 
           <tbody>
 
-              {% for m in notes %}
+              {% for m in notes_list %}
               <tr>
                   <td> <a href="{% url 'show_note' m.id %}">{{m.title}} </a></td>
      </tr>

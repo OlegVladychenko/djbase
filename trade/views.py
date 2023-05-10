@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView
 
 import datetime
 import requests
@@ -175,16 +177,28 @@ def reports_salary_manage(request):
 
     return render(request, 'trade/reports_salary_manage.html', context)
 
+class NotesList(ListView):
+    model = Notes
+    template_name = 'trade/notes.html'
 
-def notes(request):
-    context = {
-        'menu_directory': menu_directory,
-        'menu_documents': menu_documents,
-        'menu_reports': menu_reports,
-        'notes': Notes.objects.all()
-    }
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu_directory'] = menu_directory
+        context['menu_documents'] = menu_documents
+        context['menu_reports'] = menu_reports
+        return context
 
-    return render(request, 'trade/notes.html', context)
+
+#def notes(request):
+    #    paginate_by = 2
+    # context = {
+    #    'menu_directory': menu_directory,
+    #    'menu_documents': menu_documents,
+    #    'menu_reports': menu_reports,
+    #    'notes': Notes.objects.all()
+    #}
+    #
+    #return render(request, 'trade/notes.html', context)
 
 
 def show_note(request, note_id):
@@ -210,25 +224,37 @@ def show_note(request, note_id):
     }
     return render(request, 'trade/note.html', context)
 
+class AddNote(CreateView):
+    form_class = NoteForm
+    template_name = 'trade/add_note.html'
+    success_url = reverse_lazy('notes')
 
-def add_note(request):
-    if request.method == 'POST':
-        form = NoteForm(request.POST)
-        if form.is_valid():
-            try:
-                form.save()
-                return redirect('notes')
-            except:
-                form.add_error(None, 'Ошибка добавления заметки')
-    else:
-        form = NoteForm()
-    context = {
-        'form': form,
-        'menu_directory': menu_directory,
-        'menu_documents': menu_documents,
-        'menu_reports': menu_reports,
-    }
-    return render(request, 'trade/add_note.html', context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu_directory'] = menu_directory
+        context['menu_documents'] = menu_documents
+        context['menu_reports'] = menu_reports
+        return context
+
+
+#def add_note(request):
+    #    if request.method == 'POST':
+    #    form = NoteForm(request.POST)
+    #    if form.is_valid():
+    #        try:
+    #            form.save()
+    #            return redirect('notes')
+    #        except:
+    #            form.add_error(None, 'Ошибка добавления заметки')
+    # else:
+    #    form = NoteForm()
+    # context = {
+    #    'form': form,
+    #    'menu_directory': menu_directory,
+    #    'menu_documents': menu_documents,
+    #    'menu_reports': menu_reports,
+    # }
+# return render(request, 'trade/add_note.html', context)
 
 def delete_note(request, note_id):
     try:
