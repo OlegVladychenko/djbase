@@ -12,6 +12,7 @@ from html import unescape
 
 from .forms import *
 from .models import *
+from .utils import *
 from django.shortcuts import render
 from django.template import loader
 
@@ -118,19 +119,14 @@ def show_сlient(request, client_slug):
     context = {
         'form': form,
         'slug': client_slug,
-        'menu_directory': menu_directory,
-        'menu_documents': menu_documents,
-        'menu_reports': menu_reports,
     }
+    c_def = DataMixin.get_menu_context()
+    context = dict(list(context.items()) + list(c_def.items()))
     return render(request, 'trade/client.html', context)
 
 
 def reports_salary(request):
-    context = {
-        'menu_directory': menu_directory,
-        'menu_documents': menu_documents,
-        'menu_reports': menu_reports,
-    }
+    context = DataMixin.get_menu_context()
     return render(request, 'trade/reports_salary.html', context)
 
 
@@ -170,23 +166,19 @@ def reports_salary_manage(request):
         'percents': percents,
         'colors': colors,
         'total': total,
-        'menu_directory': menu_directory,
-        'menu_documents': menu_documents,
-        'menu_reports': menu_reports
     }
-
+    c_def = DataMixin.get_menu_context()
+    context = dict(list(context.items()) + list(c_def.items()))
     return render(request, 'trade/reports_salary_manage.html', context)
 
-class NotesList(ListView):
+class NotesList(DataMixin,ListView):
     model = Notes
     template_name = 'trade/notes.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu_directory'] = menu_directory
-        context['menu_documents'] = menu_documents
-        context['menu_reports'] = menu_reports
-        return context
+        c_def = self.get_user_context()
+        return dict(list(context.items())+list(c_def.items()))
 
 
 #def notes(request):
@@ -218,23 +210,21 @@ def show_note(request, note_id):
     context = {
         'note_id': note_id,
         'form': form,
-        'menu_directory': menu_directory,
-        'menu_documents': menu_documents,
-        'menu_reports': menu_reports,
     }
+    c_def = DataMixin.get_menu_context()
+    context = dict(list(context.items()) + list(c_def.items()))
+
     return render(request, 'trade/note.html', context)
 
-class AddNote(CreateView):
+class AddNote(DataMixin,CreateView):
     form_class = NoteForm
     template_name = 'trade/add_note.html'
     success_url = reverse_lazy('notes')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu_directory'] = menu_directory
-        context['menu_documents'] = menu_documents
-        context['menu_reports'] = menu_reports
-        return context
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 #def add_note(request):
