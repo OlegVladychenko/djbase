@@ -171,7 +171,8 @@ def reports_salary_manage(request):
     context = dict(list(context.items()) + list(c_def.items()))
     return render(request, 'trade/reports_salary_manage.html', context)
 
-class NotesList(DataMixin,ListView):
+class NotesList(DataMixin, ListView):
+    paginate_by = 3
     model = Notes
     template_name = 'trade/notes.html'
 

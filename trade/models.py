@@ -16,4 +16,5 @@ class Notes(models.Model):
     def get_absolute_url(self):
         return reverse('show_note', kwargs={'note_id': self.pk})
 
-
+    class Meta:
+        ordering = ['id']
