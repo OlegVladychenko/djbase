@@ -15,6 +15,7 @@ from .models import *
 from .utils import *
 from django.shortcuts import render
 from django.template import loader
+from django.db.models import Q
 
 from .report_utils import *
 
@@ -172,26 +173,28 @@ def reports_salary_manage(request):
     return render(request, 'trade/reports_salary_manage.html', context)
 
 class NotesList(DataMixin, ListView):
-    paginate_by = 3
-    model = Notes
+    paginate_by = 15
     template_name = 'trade/notes.html'
+
+    def get_queryset(self, **kwargs):
+        params = self.request.GET.get('query', None)
+        if params is None:
+            return Notes.objects.all()
+        else:
+            return Notes.objects.filter(
+                Q(content__icontains=params)
+            )
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        params = self.request.GET.get('query', None)
+        if params is not None:
+            context['search'] = params
+        else:
+            context['search'] = ''
+
         c_def = self.get_user_context()
         return dict(list(context.items())+list(c_def.items()))
-
-
-#def notes(request):
-    #    paginate_by = 2
-    # context = {
-    #    'menu_directory': menu_directory,
-    #    'menu_documents': menu_documents,
-    #    'menu_reports': menu_reports,
-    #    'notes': Notes.objects.all()
-    #}
-    #
-    #return render(request, 'trade/notes.html', context)
 
 
 def show_note(request, note_id):

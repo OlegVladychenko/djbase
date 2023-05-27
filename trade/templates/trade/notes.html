@@ -4,9 +4,22 @@
 
 <h6>Заметки</h6>
 
+<form>
+
+  <div class="form-group row">
+<div class="col-10">
+    <a href="{% url 'add_note' %}">Новая заметка </a>
+     </div>
+
+      <div class="col-2">
+        <input value="{{ search }}" type="text" class="form-control" id="search" placeholder="поиск" >
+     </div>
+
+  </div>
+</form>
 
 
-<a href="{% url 'add_note' %}">Новая заметка </a>
+
  <div class="table-responsive">
         <table class="table table-striped table-sm">
 
@@ -66,6 +79,24 @@
 
 
 </div>
+
+<script>
+var input = document.getElementById("search");
+input.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+
+      var x = document.getElementById("search").value;
+  if (x == ""){
+   location.href = 'http://127.0.0.1:8000'+{% url 'notes' %};
+   }
+  else{
+   location.href = 'http://127.0.0.1:8000'+{% url 'notes' %} +'?query='+x;
+   }
+
+  }
+});
+</script>
 
 
 
