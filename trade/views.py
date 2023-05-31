@@ -23,8 +23,11 @@ from .report_utils import *
 menu_directory = [{'title': 'Контрагенты', 'ref': 'сlients'}, {'title': 'Номенклатура', 'ref': 'goods'},
                   {'title': 'Торговые', 'ref': 'employees'}]
 menu_documents = ["Продажи", "Оплаты", "Возвраты"]
-menu_reports = [{'title': 'Продажи', 'ref': 'reports_salary'}, {'title': 'Оплаты', 'ref': 'reports_salary'},
-                {'title': 'Взаиморасчеты', 'ref': 'reports_salary'}]
+menu_reports = [{'title': 'Продажи', 'ref': 'reports_salary'},
+                {'title': 'Оплаты', 'ref': 'reports_salary'},
+                {'title': 'Взаиморасчеты', 'ref': 'reports_salary'},
+                {'title': 'Валюты', 'ref': 'reports_currencies'}
+                ]
 
 
 def index(request):
@@ -130,6 +133,10 @@ def reports_salary(request):
     context = DataMixin.get_menu_context()
     return render(request, 'trade/reports_salary.html', context)
 
+def reports_currencies(request):
+    context = DataMixin.get_menu_context()
+    return render(request, 'trade/reports_currencies.html', context)
+
 
 def reports_salary_manage(request):
     managers = {}
@@ -171,6 +178,22 @@ def reports_salary_manage(request):
     c_def = DataMixin.get_menu_context()
     context = dict(list(context.items()) + list(c_def.items()))
     return render(request, 'trade/reports_salary_manage.html', context)
+
+def reports_currencies_uah(request):
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        d1 = date(2018, 8, 13)  # начальная дата
+        d2 = date(2018, 9, 13)
+        print(get_array_date_between(d1, d2))
+    else:
+        form = ReportForm()
+    context = {
+        'form': form
+    }
+    c_def = DataMixin.get_menu_context()
+    context = dict(list(context.items()) + list(c_def.items()))
+    return render(request, 'trade/reports_currencies_uah.html', context)
+
 
 class NotesList(DataMixin, ListView):
     paginate_by = 15
