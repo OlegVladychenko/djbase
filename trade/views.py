@@ -133,6 +133,7 @@ def reports_salary(request):
     context = DataMixin.get_menu_context()
     return render(request, 'trade/reports_salary.html', context)
 
+
 def reports_currencies(request):
     context = DataMixin.get_menu_context()
     return render(request, 'trade/reports_currencies.html', context)
@@ -148,7 +149,6 @@ def reports_salary_manage(request):
         if form.is_valid():
             headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
             name_method = "reports_salary_manage"
-            print(form.cleaned_data.get('date_start').isoformat())
             params = {'date_start': form.cleaned_data.get('date_start').strftime("%Y%m%d"),
                       'date_end': form.cleaned_data.get('date_end').strftime("%Y%m%d")}
 
@@ -156,15 +156,12 @@ def reports_salary_manage(request):
             response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
             response.encoding = 'utf-8-sig'
             data = json.loads(response.text)
-            print(response.status_code)
-            print(data)
 
             managers = data[0].get('Manager')
             percents = data[0].get('Percent')
             colors = get_colors(len(managers))
             total = data[0].get('Total')
-            print(managers)
-            print(percents)
+
     else:
         form = ReportForm()
 
@@ -179,14 +176,28 @@ def reports_salary_manage(request):
     context = dict(list(context.items()) + list(c_def.items()))
     return render(request, 'trade/reports_salary_manage.html', context)
 
+
 def reports_currencies_uah(request):
+    currencies_list = [
+        ('usd', 'USD'),
+        ('rub', 'RUB'),
+    ]
+
     if request.method == 'POST':
-        form = ReportForm(request.POST)
-        d1 = date(2018, 8, 13)  # начальная дата
-        d2 = date(2018, 9, 13)
-        print(get_array_date_between(d1, d2))
+        form = ReportForm(request.POST, listparam1=currencies_list)
+        if form.is_valid():
+            headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
+            date_start = form.cleaned_data.get('date_start')
+            date_end = form.cleaned_data.get('date_end')
+            for x in get_array_date_between(date_start, date_end):
+                currencie = form.cleaned_data.get('listparam1')
+                url = 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode='+currencie +'&date='+x+'&json'
+                response = requests.get(url, headers=headers)
+                response.encoding = 'utf-8-sig'
+                data = json.loads(response.text)
+                print(data[0].get('rate'))
     else:
-        form = ReportForm()
+        form = ReportForm(listparam1=currencies_list)
     context = {
         'form': form
     }
@@ -217,11 +228,10 @@ class NotesList(DataMixin, ListView):
             context['search'] = ''
 
         c_def = self.get_user_context()
-        return dict(list(context.items())+list(c_def.items()))
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 def show_note(request, note_id):
-
     note = get_object_or_404(Notes, pk=note_id)
     print(request.method)
     if request.method == 'POST':
@@ -243,7 +253,8 @@ def show_note(request, note_id):
 
     return render(request, 'trade/note.html', context)
 
-class AddNote(DataMixin,CreateView):
+
+class AddNote(DataMixin, CreateView):
     form_class = NoteForm
     template_name = 'trade/add_note.html'
     success_url = reverse_lazy('notes')
@@ -254,23 +265,23 @@ class AddNote(DataMixin,CreateView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-#def add_note(request):
-    #    if request.method == 'POST':
-    #    form = NoteForm(request.POST)
-    #    if form.is_valid():
-    #        try:
-    #            form.save()
-    #            return redirect('notes')
-    #        except:
-    #            form.add_error(None, 'Ошибка добавления заметки')
-    # else:
-    #    form = NoteForm()
-    # context = {
-    #    'form': form,
-    #    'menu_directory': menu_directory,
-    #    'menu_documents': menu_documents,
-    #    'menu_reports': menu_reports,
-    # }
+# def add_note(request):
+#    if request.method == 'POST':
+#    form = NoteForm(request.POST)
+#    if form.is_valid():
+#        try:
+#            form.save()
+#            return redirect('notes')
+#        except:
+#            form.add_error(None, 'Ошибка добавления заметки')
+# else:
+#    form = NoteForm()
+# context = {
+#    'form': form,
+#    'menu_directory': menu_directory,
+#    'menu_documents': menu_documents,
+#    'menu_reports': menu_reports,
+# }
 # return render(request, 'trade/add_note.html', context)
 
 def delete_note(request, note_id):

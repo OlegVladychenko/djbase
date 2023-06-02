@@ -26,5 +26,5 @@ def date_range(start_date, end_date):
 def get_array_date_between(start_date, end_date):
     result = []
     for dt in date_range(start_date, end_date):
-        result.append(dt.strftime("%Y-%m-%d"))
+        result.append(dt.strftime("%Y%m%d"))
     return result
