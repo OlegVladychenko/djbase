@@ -18,3 +18,20 @@ class Notes(models.Model):
 
     class Meta:
         ordering = ['id']
+
+class Currencies(models.Model):
+    code = models.CharField(max_length=3, db_index=True, primary_key=True)
+    name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class ExchangeRates(models.Model):
+    currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
+    date = models.DateField()
+    value = models.DecimalField(null=False,max_digits=10, decimal_places=10)
+    multiplicity = models.IntegerField()
+
+    class Meta:
+        ordering = ['date']
