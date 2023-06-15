@@ -30,8 +30,5 @@ class Currencies(models.Model):
 class ExchangeRates(models.Model):
     currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
     date = models.DateField()
-    value = models.DecimalField(null=False,max_digits=10, decimal_places=10)
+    value = models.DecimalField('value', null=False,max_digits=10, decimal_places=5,default=0)
     multiplicity = models.IntegerField()
-
-    class Meta:
-        ordering = ['date']

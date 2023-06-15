@@ -186,6 +186,7 @@ def reports_currencies_uah(request):
     if request.method == 'POST':
         form = ReportForm(request.POST, listparam1=currencies_list)
         if form.is_valid():
+            load_exchange_rates_currencie('840')
             headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
             date_start = form.cleaned_data.get('date_start')
             date_end = form.cleaned_data.get('date_end')

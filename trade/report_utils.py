@@ -1,4 +1,7 @@
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
+import datetime
+
+from trade.models import ExchangeRates
 
 
 def get_colors(count):
@@ -28,3 +31,12 @@ def get_array_date_between(start_date, end_date):
     for dt in date_range(start_date, end_date):
         result.append(dt.strftime("%Y%m%d"))
     return result
+
+def load_exchange_rates_currencie(code_currencie):
+    start_date = datetime.date(2022, 1, 1)
+    last_ten = ExchangeRates.objects.filter(currencie_id=code_currencie).order_by('-id')[:1]
+    if last_ten.count() > 0:
+     start_date = last_ten[0].date
+
+
+
