@@ -186,17 +186,7 @@ def reports_currencies_uah(request):
     if request.method == 'POST':
         form = ReportForm(request.POST, listparam1=currencies_list)
         if form.is_valid():
-            load_exchange_rates_currencie('840')
-            headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
-            date_start = form.cleaned_data.get('date_start')
-            date_end = form.cleaned_data.get('date_end')
-            for x in get_array_date_between(date_start, date_end):
-                currencie = form.cleaned_data.get('listparam1')
-                url = 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode='+currencie +'&date='+x+'&json'
-                response = requests.get(url, headers=headers)
-                response.encoding = 'utf-8-sig'
-                data = json.loads(response.text)
-                print(data[0].get('rate'))
+            check_load_exchange_rates_currencie()
     else:
         form = ReportForm(listparam1=currencies_list)
     context = {
