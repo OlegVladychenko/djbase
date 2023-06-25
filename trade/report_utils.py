@@ -36,8 +36,9 @@ def get_array_date_between(start_date, end_date):
 
 def check_load_exchange_rates_currencie():
     load_exchange_rates_currencie('840')
-    #load_exchange_rates_currencie('978')
-    #load_exchange_rates_currencie('643')
+    load_exchange_rates_currencie('978')
+    load_exchange_rates_currencie('643')
+    load_exchange_rates_currencie('949')
 
 def load_exchange_rates_currencie(code_currencie):
     currencie_res = Currencies.objects.filter(code=code_currencie)
@@ -46,7 +47,7 @@ def load_exchange_rates_currencie(code_currencie):
     else:
         return
 
-    date_start = datetime.date(2022, 1, 1)
+    date_start = datetime.date(2023, 1, 1)
     last_ten = ExchangeRates.objects.filter(currencie_id=code_currencie).order_by('-id')[:1]
     if last_ten.count() > 0:
         date_start = last_ten[0].date + timedelta(days=1)

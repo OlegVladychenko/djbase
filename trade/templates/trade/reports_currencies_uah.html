@@ -28,6 +28,7 @@
 
 </form>
 
+{% autoescape off %}
 <script>
  const DATA_COUNT = 7;
  const NUMBER_CFG = {count: DATA_COUNT, min: 0, max: 100};
@@ -36,10 +37,10 @@
 new Chart(document.getElementById("line-chart"), {
   type: 'line',
   data: {
-    labels: ['01.01.2023','02.01.2023','03.01.2023','04.01.2023'],
+    labels: {{ dates }} ,
     datasets: [{
-        data: [-86,90,100,2000],
-        label: "USD",
+        data: {{rates}} ,
+
         borderColor: "#3e95cd",
         fill: false
       }
@@ -47,6 +48,9 @@ new Chart(document.getElementById("line-chart"), {
   },
  options: {
     responsive: true,
+     legend: {
+      display: false
+    },
     plugins: {
       title: {
         text: 'Chart.js Time Scale',
@@ -75,5 +79,5 @@ new Chart(document.getElementById("line-chart"), {
   },
 });
 </script>
-
+{% endautoescape %}
 {% endblock %}

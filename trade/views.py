@@ -179,18 +179,35 @@ def reports_salary_manage(request):
 
 def reports_currencies_uah(request):
     currencies_list = [
-        ('usd', 'USD'),
-        ('rub', 'RUB'),
+        ('840', 'USD'),
+        ('981', 'RUB'),
+        ('978', 'EUR'),
+        ('949', 'TRY'),
     ]
 
+    dates = []
+    rates = []
     if request.method == 'POST':
         form = ReportForm(request.POST, listparam1=currencies_list)
         if form.is_valid():
             check_load_exchange_rates_currencie()
+            start_date = form.cleaned_data.get('date_start')
+            end_date = form.cleaned_data.get('date_end')
+            currency_id = form.cleaned_data.get('listparam1')
+            rs_rates = ExchangeRates.objects.filter(currencie_id=currency_id, date__range=(start_date, end_date))
+            for x in rs_rates:
+                dates.append(x.date.strftime("%Y-%m-%d"))
+                rates.append(str(x.value))
+            print(currencies_list[0][0])
+
     else:
         form = ReportForm(listparam1=currencies_list)
+
+
     context = {
-        'form': form
+        'form': form,
+        'dates': dates,
+        'rates': rates
     }
     c_def = DataMixin.get_menu_context()
     context = dict(list(context.items()) + list(c_def.items()))
