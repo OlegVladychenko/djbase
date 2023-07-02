@@ -203,7 +203,6 @@ def reports_currencies_uah(request):
     else:
         form = ReportForm(listparam1=currencies_list)
 
-
     context = {
         'form': form,
         'dates': dates,
@@ -300,3 +299,55 @@ def delete_note(request, note_id):
     except:
         print('Ошибка удаления заметки')
     return render(request)
+
+
+def reports_salary_managers_сomparison(request):
+    # https://www.chartjs.org/docs/latest/samples/scale-options/titles.html
+    managers = {}
+    dates = {}
+    colors = {}
+    dataset = []
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            headers = {'Accept': 'application/json', 'Content-type': 'text/plain; charset=utf-8'}
+            name_method = "reports_salary_managers_сomparison"
+            params = {'date_start': form.cleaned_data.get('date_start').strftime("%Y%m%d"),
+                      'date_end': form.cleaned_data.get('date_end').strftime("%Y%m%d")}
+
+            url = 'http://localhost/CRM/hs/getData/' + name_method + "/" + json.dumps(params, ensure_ascii=False)
+            response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
+            response.encoding = 'utf-8-sig'
+            data = json.loads(response.text)
+            print(data)
+            managers = data[0].get('Managers')
+            # sales = data[0].get('Sales')
+            dates = data[0].get('Dates')
+            colors = get_colors(len(managers))
+            print(dates)
+
+            i = 0
+            for manager in managers:
+                dataset_item = {
+                    'label': manager.get('Name'),
+                    'data': manager.get('Sales'),
+                    'fill': 'true',
+                    'borderColor': colors[i],
+                    'backgroundColor': colors[i],
+                }
+                dataset.append(dataset_item)
+                i += 1
+
+    else:
+        form = ReportForm()
+
+    context = {
+        'form': form,
+        'managers': managers,
+        'dates': dates,
+        'colors': colors,
+        'dataset': dataset,
+    }
+    c_def = DataMixin.get_menu_context()
+    context = dict(list(context.items()) + list(c_def.items()))
+    return render(request, 'trade/reports_salary_managers_сomparison.html', context)
