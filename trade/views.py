@@ -271,7 +271,6 @@ class AddNote(DataMixin, CreateView):
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
-
 # def add_note(request):
 #    if request.method == 'POST':
 #    form = NoteForm(request.POST)
