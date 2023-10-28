@@ -19,7 +19,7 @@ from django.db.models import Q
 
 from .report_utils import *
 
-# menu_directory = ["Контрагенты","Номенклатура","Торговые"]
+
 menu_directory = [{'title': 'Контрагенты', 'ref': 'сlients'}, {'title': 'Номенклатура', 'ref': 'goods'},
                   {'title': 'Торговые', 'ref': 'employees'}]
 menu_documents = ["Продажи", "Оплаты", "Возвраты"]
@@ -36,12 +36,6 @@ def index(request):
 
 
 def сlients(request):
-    # url = 'http://localhost/CRM/hs/getClients/'
-    # headers = {'Accept': 'application/json'}
-    # response = requests.get(url, auth=HTTPBasicAuth('Admin', '123'), headers=headers)
-    # response.encoding = 'utf-8-sig'
-    # data = json.loads(response.text)
-
     param_goods = {}
     headers = {'Accept': 'application/json'}
     name_method = "clients"
@@ -246,6 +240,7 @@ def show_note(request, note_id):
         if form.is_valid():
             try:
                 form.save()
+                return redirect()
             except:
                 form.add_error(None, 'Ошибка добавления заметки')
     else:
@@ -271,25 +266,6 @@ class AddNote(DataMixin, CreateView):
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
-# def add_note(request):
-#    if request.method == 'POST':
-#    form = NoteForm(request.POST)
-#    if form.is_valid():
-#        try:
-#            form.save()
-#            return redirect('notes')
-#        except:
-#            form.add_error(None, 'Ошибка добавления заметки')
-# else:
-#    form = NoteForm()
-# context = {
-#    'form': form,
-#    'menu_directory': menu_directory,
-#    'menu_documents': menu_documents,
-#    'menu_reports': menu_reports,
-# }
-# return render(request, 'trade/add_note.html', context)
-
 def delete_note(request, note_id):
     try:
         instance = Notes.objects.get(id=note_id)
@@ -301,7 +277,7 @@ def delete_note(request, note_id):
 
 
 def reports_salary_managers_сomparison(request):
-    # https://www.chartjs.org/docs/latest/samples/scale-options/titles.html
+
     managers = {}
     dates = {}
     colors = {}
